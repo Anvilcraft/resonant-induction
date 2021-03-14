@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
         maven {
             name = "forge"
-            url = "http://files.minecraftforge.net/maven"
+            url = "https://files.minecraftforge.net/maven"
         }
         maven {
             name = "sonatype"
@@ -22,19 +22,19 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 
 ext.buildProps = file "build.properties"
- 
+
 buildProps.withReader {
     def prop = new Properties()
     prop.load(it)
     ext.config = new ConfigSlurper().parse prop
 }
- 
+
 group = "resonantinduction"
 archivesBaseName = "${System.getenv().JOB_NAME}"
- 
+
 minecraft {
     version = "${rootProject.config.version.minecraft}-${rootProject.config.version.forge}"
-    
+
     replaceIn "Reference.java"
     replace "@MAJOR@", rootProject.config.version.mod.major
     replace "@MINOR@", rootProject.config.version.mod.minor
@@ -47,22 +47,22 @@ subprojects*.apply plugin: 'scala'
 
 allprojects {
     version = "${config.version.mod.major}.${config.version.mod.minor}.${config.version.mod.revis}"
-    
+
     if (System.getenv("BUILD_NUMBER") != null)
         version += ".${System.getenv("BUILD_NUMBER")}"
-        
+
 	repositories {
         maven {
-            name 'Calclavia Maven'
-            url 'http://calclavia.com/maven'
+            name = "tilera"
+            url = "https://data.tilera.xyz/maven"
         }
         maven {
             name = "forge"
-            url = "http://files.minecraftforge.net/maven"
+            url = "https://files.minecraftforge.net/maven"
         }
         ivy {
 	name 'FMP'
-	artifactPattern "http://files.minecraftforge.net/[module]/[module]-dev-[revision].[ext]"
+	artifactPattern "https://files.minecraftforge.net/[module]/[module]-dev-[revision].[ext]"
         }
         maven {
 			name "chickenbones"
@@ -70,21 +70,23 @@ allprojects {
 		}
         mavenCentral()
     }
-    
+
     dependencies {
                 compile fileTree(dir: 'lib', include: '*.jar')
                 compile "codechicken:CodeChickenLib:${config.version.minecraft}-${config.version.cclib}:dev"
                 compile "codechicken:ForgeMultipart:${config.version.minecraft}-${config.version.fmp}:dev"
                 compile "codechicken:CodeChickenCore:${config.version.minecraft}-${config.version.cccore}:dev"
                 compile "codechicken:NotEnoughItems:${config.version.minecraft}-${config.version.nei}:dev"
+                compile "resonant:Universal-Electricity:3.1.0:core"
+                compile "resonant:Resonant-Engine:1.2.0:core"
 	}
-    
+
     jar {
 		classifier = project.name
         dependsOn ":copyBuildXml"
         destinationDir = file (rootProject.getRootDir().getPath() + '/output')
     }
-	
+
 	publishing {
 		publications {
 			mavenJava(MavenPublication) {
@@ -98,14 +100,14 @@ allprojects {
 		}
 	}
 }
- 
+
 subprojects {
-    archivesBaseName = "${System.getenv().JOB_NAME}"    
+    archivesBaseName = "${System.getenv().JOB_NAME}"
 	sourceSets.main.compileClasspath += rootProject.sourceSets.api.output
     dependencies {
         compile rootProject
     }
-    
+
     rootProject.tasks.reobf {
         reobf(tasks.jar) { spec ->
             spec.classpath = sourceSets.main.compileClasspath
@@ -116,19 +118,19 @@ subprojects {
 processResources {
 	from 'build.properties'
 }
- 
+
 task copyBuildXml(type: Copy) {
     from 'build.properties'
     into 'output'
 }
- 
+
 task apiZip(type: Zip) {
     classifier = 'api'
     from sourceSets*.allSource
     include 'resonantinduction/api/**'
     destinationDir = file 'output'
 }
-	
+
 artifacts {
     archives apiZip
 }
