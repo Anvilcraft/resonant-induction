@@ -51,7 +51,7 @@ allprojects {
     if (System.getenv("BUILD_NUMBER") != null)
         version += ".${System.getenv("BUILD_NUMBER")}"
 
-	repositories {
+    repositories {
         maven {
             name = "tilera"
             url = "https://data.tilera.xyz/maven"
@@ -61,25 +61,25 @@ allprojects {
             url = "https://files.minecraftforge.net/maven"
         }
         ivy {
-	name 'FMP'
-	artifactPattern "https://files.minecraftforge.net/[module]/[module]-dev-[revision].[ext]"
+            name 'FMP'
+            artifactPattern "https://files.minecraftforge.net/[module]/[module]-dev-[revision].[ext]"
         }
         maven {
-			name "chickenbones"
-			url "http://chickenbones.net/maven"
-		}
+            name "chickenbones"
+            url "http://chickenbones.net/maven"
+        }
         mavenCentral()
     }
 
     dependencies {
-                compile fileTree(dir: 'lib', include: '*.jar')
-                compile "codechicken:CodeChickenLib:${config.version.minecraft}-${config.version.cclib}:dev"
-                compile "codechicken:ForgeMultipart:${config.version.minecraft}-${config.version.fmp}:dev"
-                compile "codechicken:CodeChickenCore:${config.version.minecraft}-${config.version.cccore}:dev"
-                compile "codechicken:NotEnoughItems:${config.version.minecraft}-${config.version.nei}:dev"
-                compile "resonant:Universal-Electricity:3.1.0:core"
-                compile "resonant:Resonant-Engine:1.2.0:core"
-	}
+        compile fileTree(dir: 'lib', include: '*.jar')
+        compile "codechicken:CodeChickenLib:${config.version.minecraft}-${config.version.cclib}:dev"
+        compile "codechicken:ForgeMultipart:${config.version.minecraft}-${config.version.fmp}:dev"
+        compile "codechicken:CodeChickenCore:${config.version.minecraft}-${config.version.cccore}:dev"
+        compile "codechicken:NotEnoughItems:${config.version.minecraft}-${config.version.nei}:dev"
+        compile "resonant:Universal-Electricity:3.1.0.101:dev"
+        compile "resonant:Resonant-Engine:1.2.0:dev"
+    }
 
     jar {
 		classifier = project.name
